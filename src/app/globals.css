@@ -14,8 +14,47 @@
   }
 }
 
+.bg-connexion{
+  background-image: url('./../../public/bg/bg-conexion.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-notif1{
+  background-image: url('./../../public/bg/bg-notif1.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-notif2{
+  background-image: url('./../../public/bg/bg-notif2.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-facture{
+  background-image: url('./../../public/bg/bg-facture.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-index{
+  background-image: url('./../../public/bg/bg-index.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.bg-invoice{
+  background-image: url('./../../public/bg/bg-invoice.webp');
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
+  padding: 0;
+  margin: 0;
+  overflow-y: auto;
 }

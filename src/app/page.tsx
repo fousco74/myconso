@@ -1,97 +1,110 @@
-'use client'
-import Icon from '@mdi/react';
-
-import { mdiCloseOctagon, mdiPencil, mdiTrashCanOutline } from '@mdi/js';
-import addTodo from './actions/addTodo';
-import { FormEventHandler, JSXElementConstructor, Key, ReactElement, ReactNode, ReactPortal, useEffect, useState } from 'react';
-import { coreMakeGetRequest } from './utilities/functions';
-import fetchTodo from './actions/getTodo';
-import { todosData } from './actions/data';
-import { FormData } from 'node-fetch';
-import { useRouter } from 'next/navigation';
-
-export default function Home() {
-
-  const [todos, setTodos] = useState(todosData);
+import Image from "next/image";
+import ButtonBlue from "@/components/buttonBlue";
+import IndexTracker from "@/components/IndexTracker";
+import Select from "@/components/forms/Select";
+import InputDate from "@/components/forms/InputDate";
+import Tr from "@/components/tables/Tr";
 
 
-const [newTask, setNewTask] = useState('')
-const router = useRouter()
-
-const handlerSubmit: FormEventHandler<HTMLFormElement> = async (e) => {
-  e.preventDefault()
-  await addTodo(newTask)
-  setShow(false)
-  setNewTask('')
-  router.refresh()
-}
-  
-
-  const [show, setShow] = useState(false)
-
- 
-
+export default function home() {
   return (
-    <div className="flex justify-center items-center mt-10 w-screen bg-white">
-            <div className="flex flex-col border w-[40%] items-center justify-center">
-                <h3 className="text-center">
-                    TODO LIST
-                </h3>
-                <button className="bg-blue-700 w-full text-white rounded" onClick={() =>setShow(true)}>Add New Todo</button>
-                <table className="w-full border">
-                  <thead>
-                    <tr className="flex justify-between text-start w-full border">
-                      <th >TASK</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {
-                        
-                      todos.map( (todo: { id: Key | null | undefined; name: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }) => (
-                        <tr key={todo.id} className="flex justify-between text-start w-full border">
-                      <td>{todo.name}</td>
-                      <td className='flex gap-1'>
-                        
-                            <Icon path={mdiTrashCanOutline} size={1} 
-                          horizontal
-                          color="red"
-                          />
-                          
-                      
-                      <Icon path={mdiPencil} size={1} horizontal
-                      vertical
-                      rotate={180}
-                      color="red"
-                     />
+   <>
+    <div className="flex flex-col my-4 w-full bg-white py-5 right-3 rounded-lg ">
+        <IndexTracker class="absolute w-64 right-44 shadow-sm top-48" />
+      <div className="flex px-8 gap-3">
+        <h1>L’Index du jour</h1>
+        <Image src="icons/index.svg" alt="index-icon" width={25} height={25} />
+      </div>
+      <div className="flex justify-center items-center px-20">
+        <div className="my-3 bg-index h-64 w-full flex justify-center items-center ">
+          <div className="mt-4">
+            <form action="" className="flex flex-col gap-5">
+            <div className="flex flex-col w-full">
+                <label htmlFor="valeur">Index</label>
+                <input
+                    type="text"
+                    name=""
+                    id="valeur"
+                    placeholder="Entrer l'index"
+                    className="p-2 outline-none bg-deepBlue bg-opacity-5 rounded"
+                />
+                </div>
+              <div className="flex justify-between gap-4">
 
-                      </td>
-                    </tr>
-                      ))
-                    }
-                    
-                  </tbody>
-                </table>
-
-                <div className={`border absolute ${show ? 'flex' : 'hidden'} justify-center items-center bg-slate-400 bg-opacity-35 top-0 bottom-0 z-10 w-screen h-screen`}>
-                  <div className="p-4 bg-white  rounded-md  relative   z-50">
-                    <button onClick={()=> setShow(false)}>
-                      <Icon  className='absolute top-4 right-4' path={mdiCloseOctagon} size={1} />
-                    </button>
-
-                    <form onSubmit={handlerSubmit}>
-                      <div className="flex flex-col items-center justify-center ">
-                        <h2 className='text-center'>Add new task</h2>
-                        <div className='flex gap-1 w-full'>
-                          <input value={newTask} onChange={(e) => setNewTask(e.target.value)} type="text" name="name" placeholder='type here' className='px-4 border  border-e-rose-900 rounded border-opacity-60 hover:border-blue-600' />
-                          <button className='p-2 bg-blue-600 rounded text-white'>submit</button>
-                        </div>
-                      </div>
-                    </form>
+                <div className="flex flex-col">
+                  <label htmlFor="valeur">Heure</label>
+                  <div className="flex gap-1  w-[90px]">
+                    <input
+                      type="text"
+                      name=""
+                      id=""
+                      placeholder="10"
+                      className="w-1/2 p-2 outline-none bg-deepBlue bg-opacity-5 rounded"
+                    />
+                    :
+                    <input
+                      type="text"
+                      name=""
+                      id=""
+                      placeholder="30"
+                      className="w-1/2 p-2 outline-none bg-deepBlue bg-opacity-5 rounded"
+                    />
                   </div>
                 </div>
-
-            </div>
+                <div className="flex flex-col w-[150px]">
+                  <label htmlFor="valeur">Date</label>
+                 <InputDate />
+                </div>
+              </div>
+              <ButtonBlue icon="recorded" name="Enregistrer" />
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
-);
+
+
+    <div className="flex flex-col gap-6 my-4 w-full bg-white py-4 px-8 right-3 rounded-lg  ">
+        <div className="flex justify-between">
+            <div className="flex  gap-3 items-center">
+                <h1>Liste Index </h1>
+                <Image src="icons/index.svg" alt="index-icon" width={25} height={25} />
+            </div>
+            <div className="flex gap-5 items-center justify-center text-midnightblue">
+                <Image src="icons/filter.svg" alt="filter-icon" width={25} height={25} className="cursor-pointer" />
+                <Select name="date" options={[{
+                    name: "Cette semaine"
+                }]} />
+                <div className="flex gap-1 justify-center items-center">
+                    <span>Du</span>
+                    <InputDate />
+                </div>
+                <div className="flex gap-1 justify-center items-center">
+                    <span>Au</span>
+                    <InputDate />
+                </div> 
+            </div>
+        </div>
+        <table className="rounded-lg border-separate border-spacing-1">
+            <thead>
+            <tr>
+                <th className="text-start px-5">Index</th>
+                <th className="text-start px-5">Date</th>
+                <th className="text-start">Heure</th>
+            </tr>
+            </thead>
+            <tbody>
+                <Tr />
+                <Tr />
+                <Tr />
+                <Tr />
+                <Tr />
+                <Tr />
+                <Tr />
+                <Tr />
+            </tbody>
+        </table>
+    </div>
+   </>
+  );
 }
