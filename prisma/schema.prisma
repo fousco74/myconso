@@ -7,74 +7,71 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model client {
-  id               Int     @id(map: "customer_pkey") @default(autoincrement())
-  created_at       DateTime   @default(now()) @db.Timestamptz(6)
+  id               Int            @id(map: "customer_pkey") @default(autoincrement())
+  created_at       DateTime       @default(now()) @db.Timestamptz(6)
   type_client      String
   nom_organisation String
   compteur         compteur[]
+  consommation     consommation[]
   user             user[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model compteur {
-  id            Int   @id @default(autoincrement())
-  created_at    DateTime @default(now()) @db.Timestamptz(6)
+  id            Int            @id @default(autoincrement())
+  created_at    DateTime       @default(now()) @db.Timestamptz(6)
   abonnement    String
   type_compteur String
   client_id     Int
-  client        client   @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  client        client         @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  consommation  consommation[]
   index         index[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model consommation {
-  id               Int   @id @default(autoincrement())
-  created_at       DateTime @default(now()) @db.Timestamptz(6)
-  consommation_kw  Float
-  consommation_fcfa Float
-  index_id         Int
-  index            index    @relation(fields: [index_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                        Int       @id @default(autoincrement())
+  created_at                                DateTime  @default(now()) @db.Timestamptz(6)
+  consommation_kw                           Float
+  index_depart_id                           Int
+  consommation_fcfa                         Float
+  index_fin_id                              Int?
+  compteur_id                               Int?
+  client_id                                 Int?
+  client                                    client?   @relation(fields: [client_id], references: [id], onDelete: Cascade)
+  compteur                                  compteur? @relation(fields: [compteur_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  index_consommation_index_depart_idToindex index     @relation("consommation_index_depart_idToindex", fields: [index_depart_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  index_consommation_index_fin_idToindex    index?    @relation("consommation_index_fin_idToindex", fields: [index_fin_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model index {
-  id           Int         @id @default(autoincrement())
-  created_at   DateTime       @default(now()) @db.Timestamptz(6)
-  valeur_kw    Float
-  compteur_id  Int
-  consommation consommation[]
-  compteur     compteur       @relation(fields: [compteur_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id                                               Int            @id @default(autoincrement())
+  created_at                                       DateTime       @default(now()) @db.Timestamptz(6)
+  valeur_kw                                        Float
+  compteur_id                                      Int
+  user_id                                          Int?
+  consommation_consommation_index_depart_idToindex consommation[] @relation("consommation_index_depart_idToindex")
+  consommation_consommation_index_fin_idToindex    consommation[] @relation("consommation_index_fin_idToindex")
+  compteur                                         compteur       @relation(fields: [compteur_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  user                                             user?          @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model permission {
-  id              Int            @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   created_at      DateTime          @default(now()) @db.Timestamptz(6)
   nom             String
   role_permission role_permission[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model role {
-  id              Int            @id @default(autoincrement())
+  id              Int               @id @default(autoincrement())
   created_at      DateTime          @default(now()) @db.Timestamptz(6)
   nom             String
   role_permission role_permission[]
   user            user[]
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model role_permission {
-  id            Int     @id @default(autoincrement())
+  id            Int        @id @default(autoincrement())
   created_at    DateTime   @default(now()) @db.Timestamptz(6)
   role_id       Int
   permission_id Int
@@ -82,18 +79,17 @@ model role_permission {
   role          role       @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model user {
-  id                   Int   @id @default(autoincrement())
-  created_at           DateTime @default(now()) @db.Timestamptz(6)
-  nom                  String
-  prenoms              String
-  date_naissance       DateTime @db.Date
-  email                String
-  mot_de_passe         String
-  client_id            Int
-  role_id              Int
-  client               client   @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  role                 role     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             Int      @id @default(autoincrement())
+  created_at     DateTime @default(now()) @db.Timestamptz(6)
+  nom            String
+  prenoms        String
+  date_naissance DateTime @db.Date
+  email          String   @unique
+  mot_de_passe   String
+  client_id      Int
+  role_id        Int
+  index          index[]
+  client         client   @relation(fields: [client_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  role           role     @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }

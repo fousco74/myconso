@@ -2,8 +2,17 @@
 import Image from "next/image";
 
 import { useRouter } from "next/navigation";
+import { useTransition } from "react";
 
 export default function NavBar(props: any){
+
+  const [isPending, startTransition] = useTransition()
+  const handleLogout = () => {
+    startTransition(async () => {
+      const { signOut } = await import("@/app/(auth)/login/action")
+      await signOut()
+    })
+  }
 
   const router = useRouter()
 
@@ -33,8 +42,10 @@ export default function NavBar(props: any){
                 <span className="text-[9px]">Admin</span>
               </div>
             </div>
-            <button className="border flex gap-2 items-center p-1 rounded">
-              <span>Déconnexion</span>
+            <button  onClick={handleLogout} 
+            disabled={isPending}
+            className="border flex gap-2 items-center p-1 rounded">
+              <span>{isPending ? "Déconnexion..." : "Se Déconnecter"}</span>
               <Image
                 src="/icons/logout.svg"
                 width={10}

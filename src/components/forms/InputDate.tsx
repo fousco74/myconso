@@ -1,6 +1,6 @@
 export default function date(){
     return(
-        <div className="bg-cloudGray  p-0 border w-full rounded">
+        <div className="bg-cloudGray h-fit p-0 border w-full rounded">
             <input
                 type="date"
                 name=""

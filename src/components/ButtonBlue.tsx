@@ -1,19 +1,21 @@
-"use client"
+"use client";
+
 import { itemProps } from "@/types";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 export default function Button(props: itemProps) {
+  const router = useRouter();
 
-  const router = useRouter()
-  const addUser = () =>{
-    router.push('/admin/dashboard/users/add')
-  }
-
+  const navigateTo = () => {
+    if (props.url) {
+      router.push(props.url);
+    }
+  };
 
   return (
     <button
-    onClick={addUser}
+      onClick={navigateTo}
       className={`flex rounded-xl text-white justify-center items-center bg-bluegradient py-2 ${
         props.width || "w-[254px]"
       }`}

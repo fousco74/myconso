@@ -6,7 +6,7 @@ import Button from "@/components/buttonBlue";
 import Link from "next/link";
 import InputDate from "@/components/forms/InputDate"
 import Select from "@/components/forms/Select"
-import Invoice from "@/components/Invoice";
+import Invoice from "@/components/Invoices/Invoice";
 
 
 

@@ -1,8 +1,17 @@
+"use client"
 import Image from "next/image";
-import Select from "./forms/Select";
+import Select from "@/components/forms/Select";
 
+interface IndexTrackerProps {
+    class?: string;
+    lastIndex?: number;
+}   
 
-export default function indexTracker(props: any){
+export default function IndexTracker(props: IndexTrackerProps){
+
+    
+
+    
     
     return (
         <div className={`h-32 bg-white p-1 px-2 ${props.class || 'w-full'}  rounded-lg flex flex-col gap-4`}>
@@ -43,7 +52,7 @@ export default function indexTracker(props: any){
                         <Image src="/icons/index.svg" alt="index" width={20} height={20} />
                     </div>
                     <p className="flex gap-1">
-                        <span className="text-lg font-semibold">15 998</span>
+                        <span className="text-lg font-semibold">{props.lastIndex}</span>
                         <span className=" self-center text-[9px]">Kwh</span>
                     </p>
                 </div>

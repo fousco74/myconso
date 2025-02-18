@@ -1,4 +1,3 @@
-import ResetPassword from "@/components/ResetPassword";
 
 export default function ResetPasswordPage() {
   return (
@@ -8,7 +7,6 @@ export default function ResetPasswordPage() {
           <h1 className="text-3xl w-full text-center font-bold mb-6">
             Reset Password
           </h1>
-          <ResetPassword />
         </section>
       </div>
     </>

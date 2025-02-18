@@ -3,5 +3,5 @@ export default function SpecialLayout({
   }: Readonly<{
     children: React.ReactNode;
   }>) {
-    return <>{children}</>; // Layout vide
+    return <>{children}</>; 
   }

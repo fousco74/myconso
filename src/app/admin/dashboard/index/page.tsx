@@ -1,14 +1,11 @@
-import Item from "@/components/item";
-import CreateIndex from "@/components/CreateIndex"
+import CreateIndex from "@/components/Index/CreateIndex";
 import Table from "@/components/tables/Table";
 import Image from "next/image";
 import Select from "@/components/forms/Select";
-import ButtonBlue from "@/components/buttonBlue";
-
 import Filter from "@/components/Filter";
 import Dashboard from "@/components/DashboardComponent";
 
-export default function index(){
+export default function Index(){
   
         
 

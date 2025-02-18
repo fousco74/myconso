@@ -6,7 +6,10 @@ import profile from "@/../public/profile/kone.png";
 
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const isLoginPage = pathname === "/login";
+  const routes = [
+    "/login", "/register", "/forgot-password" ,  "/reset-password", "/error"
+  ];
+  const isLoginPage = routes.includes(pathname)
 
   if (isLoginPage) return <>{children}</>;
 

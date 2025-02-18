@@ -1,21 +1,10 @@
-import Image from "next/image";
-
-import ButtonBlue from "@/components/ButtonBlue";
-import IndexTracker from "@/components/IndexTracker";
-
+import ButtonBlue from "@/components/ButtonBlue"; 
 import InputDate from "@/components/forms/InputDate";
-import index from "@/../public/icons/index.svg"
+export default function AddIndex(){
+    return(
+    <div className="flex justify-center items-center px-20">
 
-export default function index(){
-    return (
-        <div className="flex flex-col mb-4 w-full bg-white py-5 right-3 rounded-lg ">
-                <IndexTracker class="absolute w-64 right-44 shadow-sm top-48" />
-              <div className="flex px-8 gap-3">
-                <h1>L’Index du jour</h1>
-                <Image src="/icons/index.svg" alt="index-icon" width={25} height={25} />
-              </div>
-              <div className="flex justify-center items-center px-20">
-                <div className="my-3 bg-index h-64 w-full flex justify-center items-center ">
+      <div className="my-3 bg-index h-64 w-full flex justify-center items-center ">
                   <div className="mt-4">
                     <form action="" className="flex flex-col gap-5">
                     <div className="flex flex-col w-full">
@@ -59,7 +48,7 @@ export default function index(){
                     </form>
                   </div>
                 </div>
-              </div>
-            </div>
+        </div>
+
     )
 }

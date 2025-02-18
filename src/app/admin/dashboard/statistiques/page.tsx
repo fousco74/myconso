@@ -3,7 +3,7 @@ import Dashboard from "@/components/DashboardComponent"
 import Filter from "@/components/Filter"
 import Select from "@/components/forms/Select"
 import PieChart from "@/components/charts/PieChart"
-import EmpruntCarbone from "@/components/EmpruntCarbone"
+import EmpruntCarbone from "@/components/Invoices/EmpruntCarbone/EmpruntCarbone"
 import ProgressBar from "@/components/ProgressBare"
 
 
