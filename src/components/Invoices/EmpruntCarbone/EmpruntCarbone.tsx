@@ -2,7 +2,7 @@ import Image from "next/image";
 
 export default function carbon(){
     return(
-        <div className="flex gap-1 text-midnightblue">
+        <div className="flex w-full gap-1 text-midnightblue">
             <h3 className=" font-semibold text-base">
                 Empreinte Carbone
             </h3>

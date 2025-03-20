@@ -1,40 +1,30 @@
-"use client"; 
-
-import { linePieChart } from "@/types";
+import { FC } from "react";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
-import { FC } from "react";
+import { linePieChart } from "@/types";
+
 
 const LineChart: FC<linePieChart> = (props: linePieChart) => {
   const options: Highcharts.Options = {
-    title: {
-      text: '' // Désactive le titre
-    },
-    chart: {      
-      height: props.height,
-      width: props.width,
-      type: "line",
-     
-    },
-    xAxis: {
-      categories: ["3 Jan", "6 Jan", "9 Jan", "12 Jan", "15 Jan", "18 Jan", "21 Jan", "24 Jan", "27 Jan", "30 Jan"],
-      labels: {
-        style: { fontSize: "12px", color: "#333" }, // Taille et couleur du texte
-      },
+    title: { text: "" },
+    chart: { 
+      ...(props.width && props.height ? { width: props.width, height: props.height } : {}), 
+      type: 'line' 
+  },
+      xAxis: {
+      categories: props.dates ?? [], // Utilisation des dates dynamiques
+      labels: { style: { fontSize: "12px", color: "#333" } },
     },
     yAxis: {
-      tickPositions: [0, 5, 10, 15, 20], 
+      tickPositions: props.yAxis ?? [0, 10000, 20000, 30000, 40000, 50000, 60000, 70000, 80000, 90000, 100000],
       labels: {
-        formatter: function () {
-          return this.value + "K"; // Ajoute "K" aux valeurs
-        },
         style: { fontSize: "12px", color: "#333" },
       },
     },
     series: [
       {
         type: "line",
-        data: [10, 15, 9, 12, 5, 11, 15, 2, 14, 18], 
+        data: props.consommation_fcfa ?? props.consommation_kw, // Sécurité si undefined
         color: "#618DB9",
       },
     ],

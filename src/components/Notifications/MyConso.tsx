@@ -1,10 +1,14 @@
 import Image from "next/image";
 
 
+      
+
+
 export default function MyConso(){
-    return (
-        <div className="rounded-xl w-52 h-60 border bg-notif2 flex flex-col p-4 relative">
-                <div className="flex justify-between">
+  return (
+    <div className="rounded-xl w-full md:w-52 h-48 md:h-60 border bg-notif2 flex flex-col p-2 md:p-4 relative">
+      <div className="flex flex-col  items-center gap-2">
+      <div className="flex justify-between">
                   <div className="flex gap-2">
                     <h2>Ma conso en chiffres</h2>
                     <Image
@@ -15,10 +19,8 @@ export default function MyConso(){
                     />
                   </div>
                 </div>
-
-                <span className="absolute top-16 text-4xl left-8">-10%</span>
-
-                <div className="self-center mt-20 text-[13px] opacity-85 flex flex-col gap-2 relative">
+        <span className="text-3xl md:text-4xl">-10%</span>
+        <div className="text-xs md:text-[13px] text-center md:text-left mt-5">
                   <p>
                     Youpi ! votre consommation <br />
                     des 6 derniers mois a baissé !{" "}
@@ -27,7 +29,8 @@ export default function MyConso(){
                     Vous avez économisé <br />
                     92.350 FCFA.
                   </p>
-                </div>
-              </div>
-    )
-}       
+        </div>
+      </div>
+    </div>
+  )
+}

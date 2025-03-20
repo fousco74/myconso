@@ -3,11 +3,19 @@ import Image from 'next/image'
 import Link from "next/link";
 
 
-export default function item (props : itemProps){
-    return  <li className='flex flex-col relative  text-deepBlue justify-center items-center'>
-                <Link href={`${props.url ? props.url : ""} `} className="cursor-pointer flex flex-col justify-center items-center">
-                    <Image   src={`/icons/${props.icon}.svg`} alt={props.name}  width={30} height={30} className='rounded-full m-0'/>
-                    <h3 className='mb-2 p-0 absolute top-7 '>{props.name}</h3>
-                </Link>
-            </li>
-}
+export default function Item({ url, name, icon, isActive }: itemProps) {
+    return (
+      <li className="w-full">
+        <Link href={url || "#"} className={`flex flex-col w-full items-center justify-center ${isActive ? 'border-blue-500 border-b-4' :'hover:bg-cloudGray'} md:p-2  rounded`}>
+          <Image 
+            src={`/icons/${icon}.svg`} 
+            alt={name}
+            width={20}
+            height={20}
+            className="w-4 h-4 md:w-6 md:h-6"
+          />
+          <span className="whitespace-nowrap text-[10px] md:text-sm">{name}</span>
+        </Link>
+      </li>
+    );
+  }

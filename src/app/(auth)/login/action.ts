@@ -3,37 +3,45 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 
-import { createClient } from '@/app/utils/supabase/server'
 import { prisma } from '@/utils/prisma'
+import { createClient } from '@/app/utils/supabase/server'
+
+
 
 export async function login(formData: FormData) {
-  const supabase = await createClient()
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+  const supabase = await createClient(
+    process.env.SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+
+  const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
+  if (!email || !password) {
+    return redirect("/login?error=Veuillez remplir tous les champs.");
   }
 
-  const { error } = await supabase.auth.signInWithPassword(data)
+  const { error } = await supabase.auth.signInWithPassword({ email, password });
 
   if (error) {
-    redirect('/error')
+    return redirect("/login?error=Email ou mot de passe incorrect.");
   }
 
   revalidatePath('/', 'layout')
-  redirect('/')
+
+  redirect("/");
 }
 
-export async function signup(formData: FormData) {
+
+export async function signup(nom_complet: string, email: string, password: string, client_id: number, role: number) {
   const supabase = await createClient()
 
   // type-casting here for convenience
   // in practice, you should validate your inputs
   const data = {
-    email: formData.get('email') as string,
-    password: formData.get('password') as string,
+    email: email,
+    password: password,
   }
 
   const { error } = await supabase.auth.signUp(data)
@@ -42,8 +50,16 @@ export async function signup(formData: FormData) {
     redirect('/error')
   }
 
+  const user = await createUser(nom_complet, email, password, client_id, Number(role));
+
+  if(!user){
+    redirect('/error')
+  }
+
+
   revalidatePath('/', 'layout')
   redirect('/')
+
 }
 
 export async function signOut() {
@@ -69,11 +85,24 @@ export async function signOut() {
         role: true,
         client: {
           include: {
-            compteur: true,
+            user:{
+              include: {
+                role: true,
+              },
+            },
+            compteur: {
+              include: {
+                index: true,  
+              }
+            },
+            consommation: true,
+            index: true, 
           },
         },
+       
       },
     });
+    
     
   
     return userData 

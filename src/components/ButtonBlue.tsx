@@ -17,7 +17,7 @@ export default function Button(props: itemProps) {
     <button
       onClick={navigateTo}
       className={`flex rounded-xl text-white justify-center items-center bg-bluegradient py-2 ${
-        props.width || "w-[254px]"
+        props.width || "md:w-[254px]"
       }`}
       aria-label={props.name}
     >

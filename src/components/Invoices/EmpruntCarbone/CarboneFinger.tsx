@@ -5,8 +5,8 @@ import Link from "next/link";
 
 export default function carboneFinger(){
     return(
-        <div className="w-72 h-28  flex justify-between  bg-white border rounded-lg">
-                        <div className="flex flex-col py-2 px-4">
+        <div className="md:w-72 h-28  flex justify-between  bg-white border rounded-lg">
+                        <div className="flex flex-col py-2 px-4  relative">
                           <Image
                             src="/icons/carbon-icon.svg"
                             alt="carbon-icon"
@@ -14,7 +14,7 @@ export default function carboneFinger(){
                             height={80}
                             className="relative"
                           />
-                          <div className="flex text-green  absolute bottom-10 ">
+                          <div className="flex text-green  absolute bottom-4 ">
                             <span className="text-3xl font-extrabold">8.5</span>
                             <span className="text-lg self-end">co2</span>
                           </div>
@@ -38,7 +38,7 @@ export default function carboneFinger(){
                           <div className="mt-3">
                             <Link
                               href="#"
-                              className="ml-10  opacity-75 underline text-[10px]"
+                              className="ml-10  opacity-75 underline text-[10px] hidden"
                             >
                               En savoir plus +
                             </Link>

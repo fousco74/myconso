@@ -7,11 +7,13 @@ import profile from "@/../public/profile/kone.png";
 export default function LayoutClient({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const routes = [
-    "/login", "/register", "/forgot-password" ,  "/reset-password", "/error"
+    "/login", "/register", "/forgot-password", "/signup" ,  "/reset-password", "/error"
   ];
   const isLoginPage = routes.includes(pathname)
 
   if (isLoginPage) return <>{children}</>;
+
+  
 
   return (
     <div className="flex w-screen h-screen">

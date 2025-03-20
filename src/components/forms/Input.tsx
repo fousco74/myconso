@@ -1,3 +1,4 @@
+"use client"
 import { inputProps } from "@/types";
 
 export default function text(props: inputProps){
@@ -9,7 +10,10 @@ export default function text(props: inputProps){
                 type={props.type || 'text'}
                 name={props.name}
                 id={props.name}
+                onChange={(e) => props.setValue(e.target.value)}
+                value={props?.value}
                 placeholder={props.placeholder}
+                required={props.type !== 'password'}
                 className="p-2 py-[0.36rem] outline-none bg-cloudGray w-full border  rounded"
             />
         </div>

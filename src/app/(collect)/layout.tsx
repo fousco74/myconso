@@ -12,7 +12,7 @@ export default async function AuthChecker({ children }: { children: React.ReactN
   if (!email) {
     console.log("User email not found");
     redirect("/login");
-    return null; // Empêche le rendu du contenu
+    return null; 
   }
 
   const userData = await prisma.user.findUnique({
@@ -31,7 +31,7 @@ export default async function AuthChecker({ children }: { children: React.ReactN
     return null;
   }
 
-  if (userData?.role?.nom === "admin" || userData?.role?.nom === "viewer") {
+  if (userData?.role?.name === "admin" || userData?.role?.name === "viewer") {
     redirect("/admin/dashboard");
     return null;
   }

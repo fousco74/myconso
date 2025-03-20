@@ -1,20 +1,27 @@
-
+"use client";
+import { usePathname } from "next/navigation";
 import Item from "./item";
+import { UserAuth } from "../../Hooks/UseAuth";
+import { getUser } from "@/app/(auth)/login/action";
+import { userProps } from "@/types";
+import { useEffect, useState } from "react";
+import Loading from "./Loading";
 
 export default function Dashboard({ children }: { children: React.ReactNode }) {
 
     const menus = [
+      {
+        icon: "dashboard",
+        name: "Dashboard",
+        url: "/admin/dashboard"
+      },
        {
          icon: "index",
          name: "Index",
          url: "/admin/dashboard/index"
        },
        {
-         icon: "searchs",
-         name: "Recherche",
-       },
-       {
-         icon: "stats",
+         icon: "stats1",
          name: "Statistiques",
          url: "/admin/dashboard/statistiques"
    
@@ -34,26 +41,39 @@ export default function Dashboard({ children }: { children: React.ReactNode }) {
        {
          icon: "devices",
          name: "Appareils",
-       },
-       {
-         icon: "notifs",
-         name: "Notifications",
-       },
+       }
      ];
 
-  return (
-    <div className="w-full h-screen flex py-8  gap-5 justify-around">
-      <div className="px-6 rounded-lg   bg-white">
-        <ul className="py-10 space-y-8 text-[10px]">
-          {menus.map((item) => (
-            <Item url={item.url} key={item.icon} name={item.name} icon={item.icon} />
-          ))}
-        </ul>
-      </div>
+     const pathName = usePathname();
 
-      <div className="flex flex-col w-full">
-         {children}
+     const [user, setUser] = useState<userProps | undefined>(undefined);
+     const [loading, setLoading] = useState(true);
+
+     useEffect  (() => {
+        getUser().then((res) => {
+          setUser(res);
+        }).finally(() =>{ setLoading(false) });
+      }, []); 
+
+  if (loading) return <Loading />;
+
+  return (
+    <UserAuth.Provider value={user}>
+      <div className="w-full h-screen flex flex-col md:flex-row py-4 md:py-8 gap-3 md:gap-5 justify-around">
+        <div className="px-1 md:px-2 rounded-lg bg-white w-full md:max-w-fit">
+          <ul className="py-4 space-x-4 md:space-x-0 md:space-y-4  justify-center items-center text-[10px] md:text-[10px] flex md:flex-col md:justify-center md:items-center">
+            {menus.map((item) => (
+              <Item
+                key={item.icon}
+                {...item}
+                isActive={pathName === item.url}
+              />
+            ))}
+          </ul>
+        </div>
+
+        <div className="flex flex-col w-full px-2 md:px-0">{children}</div>
       </div>
-    </div>
+    </UserAuth.Provider>
   );
 }

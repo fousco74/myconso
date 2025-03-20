@@ -3,7 +3,99 @@
 import axios from 'axios';
 // import * as slug from 'slug';
 
+export const calculateConsumptionPercentage = (
+  allPeriodes: { name: string; value: string }[], 
+  consommationData: any[], 
+  compteurId: number, 
+  typeConsommationFCFA?: boolean
+) => {
+  if (!allPeriodes || !consommationData || consommationData.length === 0) return [];
 
+  // Filtrage par compteurId
+  consommationData = consommationData.filter(conso => conso.compteur_id === compteurId);
+
+  // Calcul de la clé dynamique pour la consommation (soit "consommation_kw", soit "consommation_fcfa")
+  const consommationKey = typeConsommationFCFA  ? "consommation_fcfa" : "consommation_kw";
+
+
+  // Calculer la consommation totale
+  const totalConsommation = consommationData.reduce(
+    (sum, conso) => sum + conso[consommationKey], 
+    0
+  );
+
+
+
+  if (totalConsommation === 0) {
+    return allPeriodes.map(periode => ({ ...periode, percentage: 0 }));
+  }
+
+  // Calculer la consommation par période
+  return allPeriodes.map(periode => {
+    const [start, end] = periode.value.split(" - ").map(dateStr => new Date(dateStr.split("/").reverse().join("-"))); // Convertir les dates
+
+    const consommationPeriode = consommationData
+      .filter(conso => {
+        const consoDate = new Date(conso.created_at);
+        return consoDate >= start && consoDate <= end;
+      })
+      .reduce((sum, conso) => sum + conso[consommationKey], 0);
+
+
+    return {
+      ...periode,
+      percentage: Math.round((consommationPeriode / totalConsommation) * 100),
+    };
+  });
+};
+
+
+
+
+
+
+
+
+export const isDateInBillingPeriod = (createdAt: Date, periode: string): boolean => {
+  const [start, end] = periode.split(" - "); 
+  const [startMonth, startYear] = start.split("/").map(Number);
+  const [endMonth, endYear] = end.split("/").map(Number);
+
+  const createdMonth = createdAt.getMonth() + 1; 
+  const createdYear = createdAt.getFullYear();
+
+  // Vérifie si la date est dans l'intervalle [start, end]
+  const isAfterStart = createdYear > startYear || (createdYear === startYear && createdMonth >= startMonth);
+  const isBeforeEnd = createdYear < endYear || (createdYear === endYear && createdMonth <= endMonth);
+
+  return isAfterStart && isBeforeEnd;
+};
+
+// 🔥 Test de la fonction avec `Date`
+const testDate = new Date("2025-02-04"); // `created_at` de type Date
+const testPeriode = "02/2024 - 06/2024"; // Exemple de période
+
+console.log(`La date ${testDate.toISOString().split("T")[0]} appartient à la période ${testPeriode} ?`, isDateInBillingPeriod(testDate, testPeriode));
+
+
+// Fonction pour formater la date (10/10/2022) et l'heure (10:10)
+export const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("fr-FR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  }).format(date);
+};
+
+export const formatTime = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("fr-FR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false, // Format 24h
+  }).format(date);
+};
 
 function transformToDateTime(input: string): string {
   // Extraction des parties de la chaîne
