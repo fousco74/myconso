@@ -2,8 +2,8 @@
 
 import Image from "next/image";
 import { useState, useEffect, useMemo, useContext } from "react";
-import { userProps } from "@/types";
-import { UserAuth } from "../../../Hooks/UseAuth";
+import { useAuth } from "../../../Store/auth";
+
 
 interface IndexTrackerProps {
   className?: string;
@@ -14,7 +14,7 @@ export default function IndexTracker({ className, lastIndex }: IndexTrackerProps
   const [date, setDate] = useState(new Date());
   const [month, setMonth] = useState(date.getMonth());
   const [year, setYear] = useState(date.getFullYear());
-  const user = useContext(UserAuth);
+  const {user} = useAuth();
 
   const Mois = [
     "janvier", "février", "mars", "avril", "mai", "juin", 
@@ -65,7 +65,7 @@ export default function IndexTracker({ className, lastIndex }: IndexTrackerProps
             return (
               <span 
                 key={`${year}-${month}-${day}`} 
-                className={`p-1 rounded-full ${indexDates.includes(formattedDay) ? "bg-bluegradient" : "bg-midnightblue opacity-20"}`}
+                className={`p-1 rounded-full ${indexDates?.includes(formattedDay) ? "bg-bluegradient" : "bg-midnightblue opacity-20"}`}
               ></span>
             );
           })}

@@ -4,18 +4,20 @@ import Select from "@/components/forms/Select";
 import { userProps } from "@/types";
 import { useEffect, useState } from "react";
 import BarChart from "../charts/BarChart";
+import { useAuth } from "../../../Store/auth";
 
 interface statsProps{
-  user: userProps|null,
   compteurId: string
 }
 
-export default function Stats({user,compteurId} : statsProps){
+export default function Stats({compteurId} : statsProps){
 
   const [chart, setChart] = useState<number>(1);
   const [selectFilter, setSelectFilter] = useState<string>("week");
   const [consommationData, setConsommationData] = useState<any[]>([]);
   const [filteredData, setFilteredData] = useState<any[]>([]);
+
+  const {user} = useAuth();
 
   // Mise à jour des données de consommation
   useEffect(() => {
@@ -109,12 +111,11 @@ export default function Stats({user,compteurId} : statsProps){
               </div> 
             </div>
             <div className="px-2 md:px-4 overflow-x-auto flex-1">
-                <div className="min-w-[300px] w-[500px]">
+                <div >
                     {chart === 1 && (
                         <LineChart 
                             consommation_fcfa={consommation_fcfa} 
                             dates={datesConsommation} 
-                            width="500" 
                             height="190"
                             yAxis={generateYAxis(consommation_fcfa)}
                         />

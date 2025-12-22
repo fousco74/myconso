@@ -11,18 +11,16 @@ import { getUser } from "@/app/(auth)/login/action";
 import Image from "next/image";
 import BarChart from "@/components/charts/BarChart";
 import { calculerFacturesPeriodesPassees, factureAllPeriode } from "@/actions";
-import SelectComponent from "@/components/forms/Select";
 import { calculateConsumptionPercentage } from "@/utilities/functions";
 import Loading from "@/components/Loading";
-import { userProps } from "@/types";
-import select from "@/components/forms/Select copy";
+
+import { useAuth } from "../../../../../../Store/auth";
 
 export default function Statistique() {
-  const [loading, setLoading] = useState(true);
   const todayStr = new Date().toISOString().split("T")[0];
 
   // États principaux
-  const [user, setUser] = useState<userProps | null>(null);
+  const {user, setUser} = useAuth();
   const [consommationData, setConsommationData] = useState<object[]>([]);
 
   // États de filtres pour les graphiques
@@ -176,24 +174,23 @@ useEffect(() => {
 
 
   // Récupération des données utilisateur et des indices
-  useEffect(() => {
-    getUser()
-      .then(async (data) => {
-        if (data) setUser(data);
-
-        const compteurIdDefault = data?.client?.compteur[0].id;
+  useEffect( () => {
+    
+     async function fetchData(){
+        const compteurIdDefault = user?.client?.compteur[0].id;
 
         console.log("compteurIdDefault :", compteurIdDefault);
-        if (data?.client.index) {
-          setAllCompteur(data?.client.compteur);
+        if (user?.client.index) {
+          setAllCompteur(user?.client.compteur);
           setCompteurId(Number(compteurIdDefault));
-          setConsommationData(data?.client.consommation.filter((conso) => conso.compteur_id === compteurIdDefault));
-          setAllConsommation(data?.client.consommation.filter((conso)=> conso.compteur_id === compteurIdDefault));
+          setConsommationData(user?.client.consommation.filter((conso) => conso.compteur_id === compteurIdDefault));
+          setAllConsommation(user?.client.consommation.filter((conso)=> conso.compteur_id === compteurIdDefault));
         }
 
-        const periodes = await factureAllPeriode(data?.client_id, compteurIdDefault);
+        console.log("user client_id ::",user?.client_id)
+        const periodes = await  factureAllPeriode(Number(user?.client_id), Number(compteurIdDefault));
         const facture_par_periode = await calculerFacturesPeriodesPassees(
-          data?.client_id, 
+          user?.client_id, 
           Number(compteurIdDefault), 
           periodes
         );
@@ -202,9 +199,9 @@ useEffect(() => {
         setOriginalFactureParPeriode(facture_par_periode);
 
 
-        await setAllPeriodes(periodes);
-        const consoPeriodes = calculateConsumptionPercentage(periodes, data?.client.consommation.filter((conso) => conso.compteur_id === compteurIdDefault), compteurIdDefault);
-        const consoPeriodesFCFA = calculateConsumptionPercentage(periodes, data?.client.consommation.filter((conso) => conso.compteur_id === compteurIdDefault), compteurIdDefault, true);
+         setAllPeriodes(periodes);
+        const consoPeriodes = await calculateConsumptionPercentage(periodes, user?.client.consommation.filter((conso) => conso.compteur_id === compteurIdDefault), compteurIdDefault);
+        const consoPeriodesFCFA = await calculateConsumptionPercentage(periodes, user?.client.consommation.filter((conso) => conso.compteur_id === compteurIdDefault), compteurIdDefault, true);
        
         setConsoParPeriodeKW(consoPeriodes);
         setConsoParPeriodeFCFA(consoPeriodesFCFA);
@@ -215,36 +212,35 @@ useEffect(() => {
 
         
         // Correction de l'extraction des années
-const years = periodes
-.flatMap(p => {
+const years = periodes?.flatMap(p => {
   // Séparation des dates début/fin
-  const [start, end] = p.value.split(' - ')
+  const [start, end] = p.value.split(' - ');
   // Extraction année début (position 2 après split '/')
-  const startYear = parseInt(start.split('/')[2])
+  const startYear = parseInt(start.split('/')[2]);
   // Extraction année fin
-  const endYear = parseInt(end.split('/')[2])
-  return [startYear, endYear]
+  const endYear = parseInt(end.split('/')[2]);
+  return [startYear, endYear];
 })
-.filter((year, index, self) => {
-  // Filtrage des doublons
-  return self.indexOf(year) === index
-})
-.sort((a, b) => b - a)
+  .filter((year, index, self) => {
+    // Filtrage des doublons
+    return self.indexOf(year) === index;
+  })
+  .sort((a, b) => b - a)
 
 
+     if(years){
+        setAvailableYears(years);
+      setSelectedYear(years?.includes(currentYear) ? currentYear : years[0]);
+     }
+      
+     
+    }
 
-      setAvailableYears(years);
-      setSelectedYear(years.includes(currentYear) ? currentYear : years[0]);
+        
+fetchData();
 
-
-      })
-      .catch((error) => {
-        console.error("Error fetching user data:", error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, []);
+     
+  }, [user?.client_id]);
 
 
   useEffect(() => {
@@ -263,7 +259,7 @@ const years = periodes
  
   // fonction de filtrage
   const filterPeriodsByYear = (periods: any[], year: number) => {
-    return periods.filter(p => {
+    return periods?.filter(p => {
       // Séparation des dates début et fin
       const [startDate, endDate] = p.value.split(' - ');
       
@@ -302,7 +298,7 @@ const years = periodes
 
     
 
-  if (loading)
+  if (!user)
     return (
       <Loading />
     );
@@ -395,7 +391,7 @@ const years = periodes
                 setValue={setSelectedYear}
                 value={selectedYear}
                 name="year"
-                options={availableYears.map(year => ({
+                options={availableYears?.map(year => ({
                   name: year,
                   value: year
                 }))}

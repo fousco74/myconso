@@ -1,4 +1,4 @@
-import users from "@/app/admin/dashboard/users/page";
+import users from "@/app/(users)/admin/dashboard/users/page";
 import { UUID } from "crypto";
 import { Dispatch, SetStateAction } from "react";
 import { Url } from "url";

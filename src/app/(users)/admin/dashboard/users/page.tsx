@@ -4,7 +4,7 @@ import Table from "@/components/tables/Table";
 import Image from "next/image";
 import ButtonBlue from "@/components/buttonBlue";
 import { getUser } from "@/app/(auth)/login/action";
-import { Index, userProps } from "@/types";
+import {  userProps } from "@/types";
 import { useEffect, useState, useTransition } from "react";
 import Input from "@/components/forms/Input";
 import Select from "@/components/forms/Select";
@@ -13,9 +13,11 @@ import EditDeleteModal from "@/components/EditDeleteModal";
 import { deleteUserAccount, updateUserAccount } from "@/actions/user";
 import Modal from "@/components/Modal";
 import Loading from "@/components/Loading";
+import { useAuth } from "../../../../../../Store/auth";
 
 export default function Users() {
-  const [user, setUser] = useState<userProps | null>(null);
+
+  const {user} = useAuth();
   const [roles, setRoles] = useState<string[]>([]);
   const [isOpenAction, setIsOpenAction] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -34,36 +36,26 @@ export default function Users() {
 const [itemsPerPage] = useState(10);
 
   useEffect(() => {
-    let isMounted = true;
+   
 
     const fetchData = async () => {
-      try {
-        const userData = await getUser();
         const rolesResponse = await fetch("/api/role").then((res) => res.json());
 
-        if (userData && isMounted) {
-          setUser(userData);
-          setUsers(userData?.client?.user.filter(user => user.id !== userData.id));
-          setClient_id(userData.client_id);
+        if (user) {
+          setUsers(user?.client?.user.filter(userf => userf.id !== user.id));
+          setClient_id(user.client_id);
         }
 
         const rolesData = await rolesResponse;
-        if (isMounted) {
+        if (user) {
           setRoles(rolesData.data);
         }
-      } catch (error) {
-        console.error("Erreur lors de la récupération des données :", error);
-      } finally {
-        if (isMounted) setLoading(false);
       }
-    };
+      
 
     fetchData();
 
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  }, [user?.client_id]);
 
 
 
@@ -155,7 +147,7 @@ const [itemsPerPage] = useState(10);
     }
   };
 
-  if (loading) return <Loading />;
+  if (!user) return <Loading />;
 
   return (
     <Dashboard>

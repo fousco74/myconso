@@ -19,7 +19,7 @@ export default function Advice() {
   const userAuth = useContext(UserAuth);
   
   return (
-    <div className="rounded-xl w-full md:w-52 h-52 md:h-60 border bg-notif1 flex flex-col items-center p-2 md:p-4 relative">
+    <div className="rounded-xl w-full md:w-52 h-52 md:h-60 md:py-2 border bg-notif1 flex flex-col items-center p-2 md:p-4 relative">
       <div className="flex p-2 md:p-4 gap-3 md:gap-6 text-sm md:text-base...">
       <div className="flex   justify-center gap-2 items-center ">
 

@@ -2,29 +2,21 @@
 
 "use client";
 import { use, useEffect, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
 
 import Dashboard from "@/components/DashboardComponent";
 import Form from "@/components/forms/Form";
 import Input from "@/components/forms/Input";
 import Button from "@/components/buttonBlue";
-import InputDate from "@/components/forms/InputDate";
 import Select from "@/components/forms/Select";
 import Invoice from "@/components/Invoices/Invoice";
-import Table from "@/components/tables/Table";
-import Tr from "@/components/tables/Tr";
-import InvoiceTableRows from "@/components/Invoices/InvoiceTableRow";
-import { getUser } from "@/app/(auth)/login/action";
 import { calculerFacturePredire, calculerFacturesPeriodesPassees, factureAllPeriode } from "@/actions";
 import { facturesProps, userProps } from "@/types";
-import InvoiceTableRowGroup from "@/components/Invoices/InvoiceTableRowGroup";
 import InvoiceTable from "@/components/Invoices/InvoiceTable";
 import Loading from "@/components/Loading";
+import { useAuth } from "../../../../../../Store/auth";
 
 export default function Invoices() {
-  const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState<userProps | null>(null);
+  const {user } = useAuth();
   const [allPeriode, setAllPeriode] = useState<string[]>([]);
   const [compteurId, setCompteurId] = useState<number>();
   const [allCompteur, setAllCompteur] = useState<{ name: string; value: number }[]>([]);
@@ -47,16 +39,14 @@ export default function Invoices() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getUser();
-        if (data) {
-          setUser(data);
-          setAllCompteur(data.client?.compteur || []);
+        if (user) {
+          setAllCompteur(user.client?.compteur || []);
         }
 
-        if (data?.client_id) {
-          const compteurIdDefault = compteurId ? compteurId : data?.client?.compteur[0]?.id.toString();
-          const periodes = await factureAllPeriode(data.client_id, Number(compteurIdDefault));
-          const factures = await calculerFacturesPeriodesPassees(data.client_id, Number(compteurIdDefault), periodes);
+        if (user?.client_id) {
+          const compteurIdDefault = compteurId ? compteurId : user?.client?.compteur[0]?.id.toString();
+          const periodes = await factureAllPeriode(user.client_id, Number(compteurIdDefault));
+          const factures = await calculerFacturesPeriodesPassees(user.client_id, Number(compteurIdDefault), periodes);
 
           
           // Tri initial par période croissante
@@ -69,13 +59,11 @@ export default function Invoices() {
         }
       } catch (error) {
         console.error("Erreur lors de la récupération des données:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
     fetchData();
-  }, [compteurId]);
+  }, [compteurId, user]);
 
   useEffect(() => {
     let sorted = [...allFactures];
@@ -131,7 +119,7 @@ export default function Invoices() {
     setTotalAmount(predire.totalFacture);
   };
 
-  if(loading) return <Loading />;
+  if(!user) return <Loading />;
 
   if (!toggle) return (
     <Dashboard>

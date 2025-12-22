@@ -4,9 +4,8 @@ import Table from "@/components/tables/Table";
 import Image from "next/image";
 import Select from "@/components/forms/Select";
 import Filter from "@/components/Filter";
-import Dashboard from "@/components/DashboardComponent";
 import { getUser } from "@/app/(auth)/login/action";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { Index, userProps } from "@/types";
 import EditDeleteModal from "@/components/EditDeleteModal"
 import ButtonBlue from "@/components/ButtonBlue";
@@ -14,15 +13,16 @@ import InputDate from "@/components/forms/InputDate";
 import { deleteIndex, updateIndex } from "@/actions";
 import Modal from "@/components/Modal";
 import Loading from "@/components/Loading";
+import { useAuth } from "../../../../Store/auth";
 
 export default function IndexPage(){
   
-    const [loading, setLoading] = useState(true);
+    
 
-    const [user, setUser] = useState<userProps|null>(null)
+    const {user} = useAuth();
     const [allIndex, setAllIndex] = useState<Index[]>([]);
     const [allIndexFiltered, setAllIndexFiltered] = useState<Index[]>([]);
-    const [selectFilter, setSelectFilter] = useState<string>("week");
+    const [selectFilter, setSelectFilter] = useState<string>("7");
 
 
     
@@ -31,23 +31,15 @@ export default function IndexPage(){
       useEffect(() => {
           
               
-              getUser()
-                .then( async (data) => {
-                  if(data) setUser(data);
-                  if(data?.client.index){
-                    setAuthUser(data);
-                    setAllIndex(data?.client.index) 
-                    setAllIndexFiltered(data?.client.index)  
+              
+                  
+                  if(user?.client.index){
+                    setAuthUser(user);
+                    setAllIndex(user?.client.index) 
+                    setAllIndexFiltered(user?.client.index)  
                   }
 
-                })
-                .catch((error) => {
-                  console.error('Error fetching user data:', error);
-                })
-                .finally(() => {
-                  setLoading(false);
-                });
-          
+                
                 
           
             }, []);
@@ -68,8 +60,6 @@ export default function IndexPage(){
             const [item, setItem] = useState<Index>()
             const [monthDays, setMonthDays] = useState<string>(new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate().toString());
             const [authUser, setAuthUser] = useState<userProps|null>(null)
-            const [currentPage, setCurrentPage] = useState(1);
-            const [itemsPerPage] = useState(10);
 
   
         
@@ -192,7 +182,7 @@ export default function IndexPage(){
     
 
     return (
-      <Dashboard>
+      <>
 
 <div className="flex flex-col w-full">
  {isOpen && <Modal success={success} setSuccess={setSuccess} setMessage={setMessage}  setIsOpen={setIsOpen} message={message} />}
@@ -248,63 +238,33 @@ export default function IndexPage(){
                           </form>
                         </div>
   </EditDeleteModal>}
- 
-            <CreateIndex setAllIndex={setAllIndex} setAllIndexFiltered={setAllIndexFiltered} setUser={setUser} user={user} />
-      
-      <Table 
-        authUser={authUser} 
-        onDelete={onDelete} 
-        onEdit={onEdit} 
-        setAllIndex={setAllIndex} 
-        setAllIndexFiltered={setAllIndexFiltered}  
-        data={allIndexFiltered.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)} 
-        property={["id", "valeur_kw", "Date", "Heure"]} 
-      >
-         
-        <div className="flex gap-3 items-center ">
-          <h1>Liste Index </h1>
-          <Image src="/icons/index.svg" alt="index-icon" width={25} height={25} />
-        </div>
-        <Filter selectFilter={selectFilter}  setAllIndexFiltered={setAllIndexFiltered}  allIndex={allIndex}>
+        <CreateIndex setAllIndex={setAllIndex} setAllIndexFiltered={setAllIndexFiltered} setUser={setUser} user={user} />
+        <Table authUser={authUser} onDelete={onDelete} onEdit={onEdit} setAllIndex={setAllIndex} setAllIndexFiltered={setAllIndexFiltered}  data={allIndexFiltered} property={["id", "valeur_kw", "Date", "Heure"]} >
+            <div className="flex  gap-3 items-center">
+                <h1>Liste Index </h1>
+                <Image src="/icons/index.svg" alt="index-icon" width={25} height={25} />
+            </div>
+            <Filter selectFilter={selectFilter}  setAllIndexFiltered={setAllIndexFiltered}  allIndex={allIndex}>
                 <Image src="/icons/filter.svg" alt="filter-icon" width={25} height={25} className="cursor-pointer" />
-                <Select 
-                  setValue={setSelectFilter} 
-                  value={selectFilter}  
-                  name="date" 
-                  options={[
-                    { name: "Cette semaine", value: "week" },
-                    { name: "Ce mois", value: "month" },
-                    { name: "Cette année", value: "year" }
-                  ]} 
-                />
+                <Select setValue={setSelectFilter} value={selectFilter}  name="date" options={[{
+                    name: "Cette semaine",
+                    value: "7"
+                },
+                {
+                  name: "Ce mois",
+                  value: `${monthDays}`
+              },
+              {
+                name: "Cette année",
+                value: "360"
+            }
+          ]} />
             </Filter>
-      </Table>
+          </Table>
 
-      {/* Ajoutez la pagination ici */}
-      <div className="flex justify-center gap-4 mt-4">
-        <button
-          onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
-          disabled={currentPage === 1}
-          className="px-4 py-2 bg-midnightblue text-white rounded disabled:opacity-50"
-        >
-          Précédent
-        </button>
-        
-        <span className="px-4 py-2 text-midnightblue">
-          Page {currentPage}
-        </span>
-        
-        <button
-          onClick={() => setCurrentPage(p => 
-            Math.min(p + 1, Math.ceil(allIndexFiltered.length / itemsPerPage))
-          )}
-          disabled={currentPage * itemsPerPage >= allIndexFiltered.length}
-          className="px-4 py-2 bg-midnightblue text-white rounded disabled:opacity-50"
-        >
-          Suivant
-        </button>
-      </div>
+    
     </div>
-  </Dashboard>
+
+      </>
 )
 }

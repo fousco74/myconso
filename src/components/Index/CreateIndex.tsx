@@ -18,7 +18,7 @@ export default function Index({user, setUser, setAllIndex, setAllIndexFiltered}:
 
     return (
         <div className="flex flex-col mb-4 w-full bg-white py-5 rounded-lg relative">
-              <IndexTracker user={user} className="absolute w-64 right-32 shadow-sm top-24 max-md:hidden" />
+              <IndexTracker user={user} className="absolute w-64 right-32 shadow-sm top-24 max-lg:hidden" />
 
               <div className="flex px-8 gap-3">
                 <h1>L’Index du jour</h1>

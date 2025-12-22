@@ -8,7 +8,7 @@ const LineChart: FC<linePieChart> = (props: linePieChart) => {
   const options: Highcharts.Options = {
     title: { text: "" },
     chart: { 
-      ...(props.width && props.height ? { width: props.width, height: props.height } : {}), 
+      ...(props.width && props.height ? { width: props.width, height: props.height } : {width : 700, height: 190}), 
       type: 'line' 
   },
       xAxis: {

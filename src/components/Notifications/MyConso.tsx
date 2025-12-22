@@ -6,7 +6,7 @@ import Image from "next/image";
 
 export default function MyConso(){
   return (
-    <div className="rounded-xl w-full md:w-52 h-48 md:h-60 border bg-notif2 flex flex-col p-2 md:p-4 relative">
+    <div className="rounded-xl w-full md:w-52 h-48 md:py-2 md:h-60 border bg-notif2 flex flex-col p-2 md:p-4 relative">
       <div className="flex flex-col  items-center gap-2">
       <div className="flex justify-between">
                   <div className="flex gap-2">

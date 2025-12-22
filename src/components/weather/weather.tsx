@@ -55,9 +55,6 @@ export default function Weather() {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
   const [date, setDate] = useState("");
 
-  console.log("🌤️ API KEY :", API_KEY);
-  console.log("🌤️ BASE URL :", BASE_URL);
-
   // 🔄 Met à jour la date & l'heure chaque minute
   useEffect(() => {
     const updateDate = () => {
@@ -83,8 +80,7 @@ export default function Weather() {
   const fetchWeather = async () => {
     try {
       if (!API_KEY || !BASE_URL) {
-        console.error(" Clé API ou URL de base manquante");
-        return;
+                return;
       }
 
       const response = await coreMakeGetRequest({
@@ -117,7 +113,7 @@ export default function Weather() {
   }, []);
 
   return (
-    <div className="md:w-1/2 bg-white rounded-lg p-2">
+    <div className="md:w-1/2 bg-white rounded-lg border py-4 px-1">
       <div className="flex justify-around">
         {weatherData && (
           <Image

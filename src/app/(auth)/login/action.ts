@@ -68,42 +68,30 @@ export async function signOut() {
     redirect("/login") 
   }
 
-  export async function getUser() {
-    const supabase = await createClient()
-    const { data, error } = await supabase.auth.getUser()
-  
-    if (error || !data?.user) return null
+  // app/(auth)/login/action.ts
 
-    const email = data?.user?.email;
+export async function getUser() {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getUser()
 
+  if (error || !data?.user) return null
 
-    const userData = await prisma.user.findUnique({
-      where: {
-        email: email,
-      },
-      include: {
-        role: true,
-        client: {
-          include: {
-            user:{
-              include: {
-                role: true,
-              },
-            },
-            compteur: {
-              include: {
-                index: true,  
-              }
-            },
-            consommation: true,
-            index: true, 
-          },
+  const email = data?.user?.email
+
+  const userData = await prisma.user.findUnique({
+    where: { email },
+    include: {
+      role: true,
+      client: {
+        include: {
+          user: { include: { role: true } },
+          compteur: { include: { index: true } },
+          consommation: true,
+          index: true,
         },
-       
       },
-    });
-    
-    
-  
-    return userData 
-  }
+    },
+  })
+
+  return userData
+}

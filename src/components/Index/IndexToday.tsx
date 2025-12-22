@@ -9,21 +9,20 @@ import { revalidatePath } from "next/cache";
 import { useRouter } from "next/navigation";
 import InputDate from "@/components/forms/InputDate";
 import { getUser } from "@/app/(auth)/login/action";
+import { useAuth } from "../../../Store/auth";
 
 
 
 interface IndexTodayProps {
-    user: userProps | null;
     compteurId: string;
     setCompteurId: React.Dispatch<React.SetStateAction<string>>;
     setFacture: React.Dispatch<React.SetStateAction<number>>;
     setLastIndex: React.Dispatch<React.SetStateAction<number>>;
-    setUser: React.Dispatch<React.SetStateAction<userProps|null>>;
 }
 
-export   const  IndexToday :  React.FC<IndexTodayProps> =({ setCompteurId, compteurId, user, setFacture, setLastIndex, setUser}) =>{
+export   const  IndexToday :  React.FC<IndexTodayProps> =({ setCompteurId, compteurId, setFacture, setLastIndex}) =>{
 
-
+    const {user, setUser} = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [success, setSuccess] = useState<boolean>(false);
     const [valeur_kw, setValeur_kw] = useState<string>("")
@@ -34,8 +33,6 @@ export   const  IndexToday :  React.FC<IndexTodayProps> =({ setCompteurId, compt
     const todayStr = new Date().toISOString().split("T")[0]; 
     const [indexDate, setIndexDate] = useState<string>(todayStr);
 
-     console.log("Date indexDate :", typeof indexDate);
-    console.log("Date todayStr :", typeof todayStr);
     const formattedDate = useMemo(() => {
       if (indexDate !== "") {
         const [year, month, day] = indexDate.split("-").map(Number); 
